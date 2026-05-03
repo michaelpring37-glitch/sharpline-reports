@@ -1,0 +1,36 @@
+name: Sharpline Weekly Briefing
+
+on:
+  schedule:
+    # 9 AM ET = 14:00 UTC (EST) / 13:00 UTC (EDT during summer)
+    # Running at 13:00 UTC covers EDT (summer), adjust to 14:00 for EST (winter)
+    - cron: '0 13 * * 3'   # Wednesday 9 AM ET (summer)
+    - cron: '0 13 * * 0'   # Sunday 9 AM ET (summer)
+  workflow_dispatch:        # Manual trigger — run anytime from GitHub UI
+
+jobs:
+  send-briefing:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install dependencies
+        run: pip install requests
+
+      - name: Run Sharpline briefing
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          SENDGRID_API_KEY:  ${{ secrets.SENDGRID_API_KEY }}
+          TO_EMAIL:          ${{ secrets.TO_EMAIL }}
+          FROM_EMAIL:        ${{ secrets.FROM_EMAIL }}
+          LEAGUE_1_ID:       "123644"
+          LEAGUE_2_ID:       "1624981735"
+        run: python scripts/generate_briefing.py
