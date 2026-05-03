@@ -380,6 +380,7 @@ def main():
         if SECTIONS.get(key, False):
             try:
                 sections_content[key] = fn()
+                time.sleep(15)
             except Exception as e:
                 print(f"  Section '{key}' failed: {e}")
                 sections_content[key] = f"Could not generate this section: {e}"
