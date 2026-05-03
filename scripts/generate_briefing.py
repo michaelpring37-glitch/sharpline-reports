@@ -72,7 +72,7 @@ def call_claude(prompt: str, max_tokens: int = 2000) -> str:
         "anthropic-version": "2023-06-01",
     }
     body = {
-        "model": "claude-sonnet-4-20250514",
+       "model": "claude-sonnet-4-6",
         "max_tokens": max_tokens,
         "tools": [{"type": "web_search_20250305", "name": "web_search"}],
         "messages": [{"role": "user", "content": prompt}],
@@ -85,7 +85,10 @@ def call_claude(prompt: str, max_tokens: int = 2000) -> str:
             return "".join(b["text"] for b in data["content"] if b["type"] == "text")
         except Exception as e:
             if attempt == 0:
-                print(f"  Claude retry: {e}"); time.sleep(5)
+                print(f"  Claude retry: {e}")
+                print(f"  Key prefix: {ANTHROPIC_API_KEY[:12]}...")
+                print(f"  Key length: {len(ANTHROPIC_API_KEY)}")
+                time.sleep(5)
             else:
                 raise
 
